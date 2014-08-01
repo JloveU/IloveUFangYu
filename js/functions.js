@@ -93,24 +93,32 @@ function startHeartAnimation() {
 })(jQuery);
 
 function timeElapse(date){
-	var current = Date();
-	var seconds = (Date.parse(current) - Date.parse(date)) / 1000;
-	var days = Math.floor(seconds / (3600 * 24));
-	seconds = seconds % (3600 * 24);
-	var hours = Math.floor(seconds / 3600);
-	if (hours < 10) {
-		hours = "0" + hours;
+	var current = new Date();
+
+	var dayOfMonth = new Array(0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+
+	var currentYear = parseInt(current.getFullYear());
+	var currentMonth = parseInt(current.getMonth()) + 1;
+	var currentDay = parseInt(current.getUTCDate());
+	var dateYear = parseInt(date.getFullYear());
+	var dateMonth = parseInt(date.getMonth()) + 1;
+	var dateDay = parseInt(date.getUTCDate());
+
+	var yearsInt = (currentYear - dateYear) - (currentMonth == dateMonth && currentDay < dateDay || currentMonth < dateMonth);
+	var monthsInt = (currentMonth - dateMonth) + 12 * (currentMonth <= dateMonth) - (currentDay < dateDay);
+	var daysInt;
+	if (currentDay < dateDay) {
+		daysInt = dayOfMonth[currentMonth - 1] - (dateDay - currentDay);
 	}
-	seconds = seconds % 3600;
-	var minutes = Math.floor(seconds / 60);
-	if (minutes < 10) {
-		minutes = "0" + minutes;
+	else {
+		daysInt = currentDay - dateDay;
 	}
-	seconds = seconds % 60;
-	if (seconds < 10) {
-		seconds = "0" + seconds;
-	}
-	var result = "<span class=\"digit\">" + days + "</span> days <span class=\"digit\">" + hours + "</span> hours <span class=\"digit\">" + minutes + "</span> minutes <span class=\"digit\">" + seconds + "</span> seconds"; 
+
+	var years = String(yearsInt);
+	var months = String(monthsInt);
+	var days = String(daysInt);
+
+	var result = "<span class=\"digit\">" + years + "</span> 年 <span class=\"digit\">" + months + "</span> 月 <span class=\"digit\">" + days + "</span> 天 "; 
 	$("#elapseClock").html(result);
 }
 
